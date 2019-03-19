@@ -7,18 +7,43 @@ AMovingPlatform::AMovingPlatform()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AMovingPlatform::SwitchDirection()
+{
+	bComingBack = !bComingBack;
+}
+
+void AMovingPlatform::TurnOn()
+{
+	bTurnedOn = true;
+}
+
 void AMovingPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (HasAuthority())
+	if (HasAuthority() && bTurnedOn)
 	{
 		FVector Location = GetActorLocation();
 		// We need to transform Target Position from Local to Global
-		FVector GlobalTargetLocation = GetTransform().TransformPosition(TargetLocation);
-		FVector Direction = (GlobalTargetLocation - Location).GetSafeNormal();
-		Location += Direction * Speed * DeltaTime;
-		SetActorLocation(Location);
+		FVector Direction = (GlobalTargetLocation - StartingPoint).GetSafeNormal();
+		if (bComingBack)
+		{
+			Location -= Direction * Speed * DeltaTime;
+			SetActorLocation(Location);
+			if (Location.PointsAreNear(Location, StartingPoint, 50.0f))
+			{
+				SwitchDirection();
+			}
+		}
+		else
+		{
+			Location += Direction * Speed * DeltaTime;
+			SetActorLocation(Location);
+			if (Location.PointsAreNear(Location, GlobalTargetLocation, 50.0f))
+			{
+				SwitchDirection();
+			}
+		}
 	}
 }
 
@@ -30,5 +55,7 @@ void AMovingPlatform::BeginPlay()
 	{
 		SetReplicates(true);
 		SetReplicateMovement(true);
+		StartingPoint = GetActorLocation();
+		GlobalTargetLocation = GetTransform().TransformPosition(TargetLocation);
 	}
 }

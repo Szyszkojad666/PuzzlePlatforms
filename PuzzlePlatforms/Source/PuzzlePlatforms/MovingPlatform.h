@@ -26,7 +26,19 @@ public:
 	UPROPERTY(EditAnywhere)
 	float Speed;
 
+	UPROPERTY(EditAnywhere)
+	bool bTurnedOn = false;
+
 	UPROPERTY(EditAnywhere, Meta = (MakeEditWidget = true))
 	FVector TargetLocation;
-	
+
+	FVector StartingPoint;
+
+	FVector GlobalTargetLocation;
+
+	bool bComingBack;
+
+	void SwitchDirection();
+
+	void TurnOn();
 };
