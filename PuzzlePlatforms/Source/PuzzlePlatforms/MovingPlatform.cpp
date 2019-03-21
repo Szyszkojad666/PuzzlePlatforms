@@ -12,9 +12,9 @@ void AMovingPlatform::SwitchDirection()
 	bComingBack = !bComingBack;
 }
 
-void AMovingPlatform::TurnOn()
+void AMovingPlatform::ToggleActive(bool Active)
 {
-	bTurnedOn = true;
+	bTurnedOn = Active;
 }
 
 void AMovingPlatform::Tick(float DeltaTime)

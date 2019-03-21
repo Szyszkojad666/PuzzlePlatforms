@@ -40,5 +40,6 @@ public:
 
 	void SwitchDirection();
 
-	void TurnOn();
+	void ToggleActive(bool Active);
+
 };

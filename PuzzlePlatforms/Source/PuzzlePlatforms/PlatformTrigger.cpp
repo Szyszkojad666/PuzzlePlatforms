@@ -13,6 +13,7 @@ APlatformTrigger::APlatformTrigger()
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	RootComponent = TriggerBox;
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapBegin);
+	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapEnd);
 	TriggerBox->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
@@ -34,7 +35,18 @@ void APlatformTrigger::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AAct
 	{
 		if (!PlatformAtIndex->bTurnedOn)
 		{
-			PlatformAtIndex->TurnOn();
+			PlatformAtIndex->ToggleActive(true);
+		}
+	}
+}
+
+void APlatformTrigger::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	for (AMovingPlatform* PlatformAtIndex : ConnectedPlatforms)
+	{
+		if (PlatformAtIndex->bTurnedOn)
+		{
+			PlatformAtIndex->ToggleActive(false);
 		}
 	}
 }
