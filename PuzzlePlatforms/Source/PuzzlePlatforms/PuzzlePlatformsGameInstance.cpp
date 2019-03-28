@@ -1,12 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PuzzlePlatformsGameInstance.h"
+
+#include "Blueprint/UserWidget.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
 
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Constructor"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetBPClass(TEXT("/Game/ThirdPersonCPP/Blueprints/UI/WBP_Menu"));
+	if (!ensure(MenuWidgetBPClass.Class != NULL)) return;
+	
+	MainMenuWidgetBlueprintClass = MenuWidgetBPClass.Class;
+	UE_LOG(LogTemp, Warning, TEXT("Found class %s"), *MenuWidgetBPClass.Class->GetName());
 }
 
 void UPuzzlePlatformsGameInstance::Init()
@@ -36,5 +43,15 @@ void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 		PC->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 	}
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Joining %s"), *Address)); // printf is needed to convert TEXT into FString and print it together with Address
+}
+
+void UPuzzlePlatformsGameInstance::LoadMenu()
+{
+	if (!ensure(MainMenuWidgetBlueprintClass!= NULL)) return;
+	UUserWidget* Menu = CreateWidget<UUserWidget>(this, MainMenuWidgetBlueprintClass);
+	if (!ensure(Menu != NULL)) return;
+	{
+		Menu->AddToViewport();
+	}
 }
 

@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
 
+class UUserWidget;
 /**
  * 
  */
@@ -24,6 +25,12 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance
 
 	UFUNCTION(exec)
 	void Join(const FString& Address);
+
+	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
+	void LoadMenu();
+
+private:
+	TSubclassOf<UUserWidget> MainMenuWidgetBlueprintClass;
 	
 	
 };
