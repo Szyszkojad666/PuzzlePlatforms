@@ -5,13 +5,14 @@
 #include "Blueprint/UserWidget.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
+#include "MenuSystem/MainMenu.h"
 
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetBPClass(TEXT("/Game/ThirdPersonCPP/Blueprints/UI/WBP_Menu"));
+	// Getting the blueprint class is done in the constructor
+	static ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetBPClass(TEXT("/Game/ThirdPersonCPP/Blueprints/UI/WBP_MainMenu"));
 	if (!ensure(MenuWidgetBPClass.Class != NULL)) return;
-	
 	MainMenuWidgetBlueprintClass = MenuWidgetBPClass.Class;
 	UE_LOG(LogTemp, Warning, TEXT("Found class %s"), *MenuWidgetBPClass.Class->GetName());
 }
@@ -48,10 +49,20 @@ void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 void UPuzzlePlatformsGameInstance::LoadMenu()
 {
 	if (!ensure(MainMenuWidgetBlueprintClass!= NULL)) return;
-	UUserWidget* Menu = CreateWidget<UUserWidget>(this, MainMenuWidgetBlueprintClass);
+	UMainMenu* Menu = CreateWidget<UMainMenu>(this, MainMenuWidgetBlueprintClass);
 	if (!ensure(Menu != NULL)) return;
 	{
 		Menu->AddToViewport();
+		APlayerController* PC = GetFirstLocalPlayerController();
+		if (PC)
+		{
+			FInputModeUIOnly InputMode;
+			InputMode.SetWidgetToFocus(Menu->TakeWidget());
+			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			PC->SetInputMode(InputMode);
+			PC->bShowMouseCursor = true;
+			Menu->SetMenuInterface(this);
+		}
 	}
 }
 
