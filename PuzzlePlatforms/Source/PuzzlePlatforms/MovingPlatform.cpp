@@ -4,7 +4,7 @@
 
 AMovingPlatform::AMovingPlatform()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true; 
 }
 
 void AMovingPlatform::SwitchDirection()

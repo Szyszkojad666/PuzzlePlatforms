@@ -25,6 +25,21 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* JoinButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* MenuSwitcherButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* CancelButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidgetSwitcher* MenuSwitcher;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidget* JoinMenu;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidget* MainMenu;
 	
 	IMenuInterface* MenuInterface;
 
@@ -34,6 +49,15 @@ public:
 
 	UFUNCTION()
 	void Join();
+
+	UFUNCTION()
+	void SwitchMenu();
+
+	UFUNCTION()
+	void Setup();
+
+	UFUNCTION()
+	void Deactivate();
 	
 	void SetMenuInterface(IMenuInterface* MenuInterface);
 };
