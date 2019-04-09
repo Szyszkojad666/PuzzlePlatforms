@@ -24,5 +24,5 @@ class PUZZLEPLATFORMS_API IMenuInterface
 public:
 	virtual void Host() = 0; //empty implementation so the compiler doesn't throw errors, the function has to have the same signature as in the class inheriting from this interface
 
-	
+	virtual void Join(const FString& Address) = 0;
 };

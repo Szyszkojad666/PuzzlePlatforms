@@ -30,8 +30,12 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
 	void LoadMenu();
 
+	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
+	void LoadInGameMenu();
+
 private:
 	TSubclassOf<UUserWidget> MainMenuWidgetBlueprintClass;
+	TSubclassOf<UUserWidget> InGameMenuWidgetBlueprintClass;
 	
 	
 };

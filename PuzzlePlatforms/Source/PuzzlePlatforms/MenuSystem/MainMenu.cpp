@@ -3,6 +3,7 @@
 #include "MainMenu.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "Components/EditableText.h"
 
 bool UMainMenu::Initialize()
 {
@@ -27,8 +28,12 @@ void UMainMenu::Host()
 
 void UMainMenu::Join()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Join button clicked"));
-	Deactivate();
+	if (MenuInterface != nullptr)
+	{
+		FString IPAddress = IPAddressField->GetText().ToString();
+		MenuInterface->Join(IPAddress);
+		Deactivate();
+	}
 }
 
 void UMainMenu::SwitchMenu()
