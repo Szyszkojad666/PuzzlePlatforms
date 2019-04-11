@@ -13,11 +13,15 @@ bool UInGameMenu::Initialize()
 
 void UInGameMenu::Cancel()
 {
-	
+	Deactivate();
 }
 
 void UInGameMenu::Quit()
 {
+	if (!ensure(MenuInterface != NULL)) return;
+	{
+		MenuInterface->Quit();
+	}
 }
 
 void UInGameMenu::Deactivate()
@@ -31,6 +35,14 @@ void UInGameMenu::Deactivate()
 		CancelButton->OnClicked.RemoveAll(this);
 		QuitButton->OnClicked.RemoveAll(this);
 		RemoveFromParent();
+	}
+}
+
+void UInGameMenu::SetMenuInterface(IMenuInterface * MenuInterface)
+{
+	if (MenuInterface)
+	{
+		this->MenuInterface = MenuInterface;
 	}
 }
 

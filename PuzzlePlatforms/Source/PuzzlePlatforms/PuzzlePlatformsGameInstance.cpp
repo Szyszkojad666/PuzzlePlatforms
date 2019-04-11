@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
 #include "MenuSystem/MainMenu.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "InGameMenu.h"
 
 
@@ -70,6 +71,16 @@ void UPuzzlePlatformsGameInstance::LoadInGameMenu()
 	if (!ensure(Menu != NULL)) return;
 	{
 		Menu->Setup();
+		Menu->SetMenuInterface(this);
+	}
+}
+
+void UPuzzlePlatformsGameInstance::Quit()
+{
+	APlayerController* PC = GetFirstLocalPlayerController();
+	if (PC)
+	{
+		PC->ClientTravel("/Game/ThirdPersonCPP/Blueprints/UI/WBP_Menu", ETravelType::TRAVEL_Absolute);
 	}
 }
 

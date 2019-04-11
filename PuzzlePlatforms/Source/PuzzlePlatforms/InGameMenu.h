@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "MenuSystem/MenuInterface.h"
 #include "InGameMenu.generated.h"
 
 /**
@@ -16,24 +17,27 @@ class PUZZLEPLATFORMS_API UInGameMenu : public UUserWidget
 
 protected:
 	virtual bool Initialize() override;
-	
-private:
-
-	UPROPERTY(meta = (BindWidget))
-	class UButton* QuitButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* CancelButton;
+	
+	IMenuInterface* MenuInterface;
+
+	UFUNCTION()
+	virtual void Cancel();
+
+	UFUNCTION()
+	virtual void Quit();
+
+	virtual void Deactivate();
+
+private:
+	
+	UPROPERTY(meta = (BindWidget))
+	class UButton* QuitButton;
 
 public:
+	void SetMenuInterface(IMenuInterface* MenuInterface);
 	
-	UFUNCTION()
-	void Cancel();
-
-	UFUNCTION()
-	void Quit();
-
 	void Setup();
-	
-	void Deactivate();
 };

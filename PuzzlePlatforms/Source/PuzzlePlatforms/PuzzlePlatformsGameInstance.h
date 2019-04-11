@@ -22,16 +22,19 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	virtual void Init();
 
 	UFUNCTION(exec) //exec allows this function to show in console
-	void Host();
+	void Host() override;
 
 	UFUNCTION(exec)
-	void Join(const FString& Address);
+	void Join(const FString& Address) override;
 
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
 	void LoadMenu();
 
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
 	void LoadInGameMenu();
+
+	UFUNCTION()
+	void Quit() override;
 
 private:
 	TSubclassOf<UUserWidget> MainMenuWidgetBlueprintClass;

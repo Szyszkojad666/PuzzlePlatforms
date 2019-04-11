@@ -13,7 +13,6 @@ bool UMainMenu::Initialize()
 	HostButton->OnClicked.AddDynamic(this, &UMainMenu::Host);
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::Join);
 	MenuSwitcherButton->OnClicked.AddDynamic(this, &UMainMenu::SwitchMenu);
-	CancelButton->OnClicked.AddDynamic(this, &UMainMenu::SwitchMenu);
 	return true;
 }
 
@@ -48,22 +47,9 @@ void UMainMenu::SwitchMenu()
 	}
 }
 
-void UMainMenu::Setup()
-{
-	this->AddToViewport();
-	APlayerController* PC = GetOwningPlayer();
-	if (PC)
-	{
-		FInputModeUIOnly InputMode;
-		InputMode.SetWidgetToFocus(this->TakeWidget());
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		PC->SetInputMode(InputMode);
-		PC->bShowMouseCursor = true;
-	}
-}
-
 void UMainMenu::Deactivate()
 {
+	Super::Deactivate();
 	APlayerController* PC = GetOwningPlayer();
 	if (PC)
 	{
@@ -73,15 +59,16 @@ void UMainMenu::Deactivate()
 		HostButton->OnClicked.RemoveAll(this);
 		JoinButton->OnClicked.RemoveAll(this);
 		MenuSwitcherButton->OnClicked.RemoveAll(this);
-		CancelButton->OnClicked.RemoveAll(this);
 		RemoveFromParent();
 	}
 }
 
-void UMainMenu::SetMenuInterface(IMenuInterface * MenuInterface)
+void UMainMenu::Quit()
 {
-	if (MenuInterface)
-	{
-		this->MenuInterface = MenuInterface;
-	}
+	
+}
+
+void UMainMenu::Cancel()
+{
+	SwitchMenu();
 }
