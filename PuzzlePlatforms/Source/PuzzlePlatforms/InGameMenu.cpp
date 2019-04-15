@@ -20,6 +20,7 @@ void UInGameMenu::Quit()
 {
 	if (!ensure(MenuInterface != NULL)) return;
 	{
+		Deactivate();
 		MenuInterface->Quit();
 	}
 }

@@ -84,3 +84,12 @@ void UPuzzlePlatformsGameInstance::Quit()
 	}
 }
 
+void UPuzzlePlatformsGameInstance::QuitGame()
+{
+	APlayerController* PC = GetFirstLocalPlayerController();
+	if (PC)
+	{
+		PC->ConsoleCommand("Exit");
+	}
+}
+

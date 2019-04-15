@@ -65,7 +65,7 @@ void UMainMenu::Deactivate()
 
 void UMainMenu::Quit()
 {
-	
+	MenuInterface->QuitGame();
 }
 
 void UMainMenu::Cancel()
