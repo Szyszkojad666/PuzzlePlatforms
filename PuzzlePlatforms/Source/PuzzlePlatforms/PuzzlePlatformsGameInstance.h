@@ -28,7 +28,7 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	void Join(const FString& Address) override;
 
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
-	void LoadMenu();
+	void LoadMenuWidget();
 
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
 	void LoadInGameMenu();

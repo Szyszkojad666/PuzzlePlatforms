@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
 #include "MenuSystem/MainMenu.h"
+#include "OnlineSubsystem.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "InGameMenu.h"
 
@@ -26,7 +27,12 @@ UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 
 void UPuzzlePlatformsGameInstance::Init()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Init"));
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OSS = %s"), *OnlineSubsystem->GetSubsystemName().ToString());
+		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+	}
 }
 
 void UPuzzlePlatformsGameInstance::Host()
@@ -53,7 +59,7 @@ void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Joining %s"), *Address)); // printf is needed to convert TEXT into FString and print it together with Address
 }
 
-void UPuzzlePlatformsGameInstance::LoadMenu()
+void UPuzzlePlatformsGameInstance::LoadMenuWidget()
 {
 	if (!ensure(MainMenuWidgetBlueprintClass!= NULL)) return;
 	UMainMenu* Menu = CreateWidget<UMainMenu>(this, MainMenuWidgetBlueprintClass);
