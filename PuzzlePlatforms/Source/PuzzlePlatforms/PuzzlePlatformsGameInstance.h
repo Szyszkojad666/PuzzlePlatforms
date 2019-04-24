@@ -39,6 +39,8 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	UFUNCTION()
 	void QuitGame() override;
 
+	virtual void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+
 private:
 	TSubclassOf<UUserWidget> MainMenuWidgetBlueprintClass;
 	TSubclassOf<UUserWidget> InGameMenuWidgetBlueprintClass;

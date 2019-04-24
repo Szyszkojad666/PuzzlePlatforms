@@ -9,6 +9,8 @@
 #include "OnlineSubsystem.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "InGameMenu.h"
+#include "OnlineSessionSettings.h"
+#include "OnlineSessionInterface.h"
 
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
@@ -32,6 +34,12 @@ void UPuzzlePlatformsGameInstance::Init()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OSS = %s"), *OnlineSubsystem->GetSubsystemName().ToString());
 		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+		if (SessionInterface.IsValid())
+		{
+			FOnlineSessionSettings SessionSettings;
+			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
+			SessionInterface->CreateSession(0, TEXT("MyGameSession"), SessionSettings);
+		}
 	}
 }
 
@@ -96,6 +104,14 @@ void UPuzzlePlatformsGameInstance::QuitGame()
 	if (PC)
 	{
 		PC->ConsoleCommand("Exit");
+	}
+}
+
+void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		Host();
 	}
 }
 
