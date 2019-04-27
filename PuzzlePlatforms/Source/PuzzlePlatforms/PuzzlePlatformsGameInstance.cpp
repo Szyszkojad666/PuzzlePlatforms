@@ -6,12 +6,12 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
 #include "MenuSystem/MainMenu.h"
-#include "OnlineSubsystem.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "InGameMenu.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSessionInterface.h"
 
+const static FName SESSION_NAME = TEXT("MyGameSession");
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 {
@@ -33,28 +33,41 @@ void UPuzzlePlatformsGameInstance::Init()
 	if (OnlineSubsystem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OSS = %s"), *OnlineSubsystem->GetSubsystemName().ToString());
-		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+		SessionInterface = OnlineSubsystem->GetSessionInterface();
 		if (SessionInterface.IsValid())
 		{
-			FOnlineSessionSettings SessionSettings;
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
-			SessionInterface->CreateSession(0, TEXT("MyGameSession"), SessionSettings);
+			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnDestroySessionComplete);
+			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnFindSessionsComplete);
+			SessionSearch = MakeShareable(new FOnlineSessionSearch());
+			if (SessionSearch.IsValid())
+			{
+				SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+			}
 		}
 	}
 }
 
 void UPuzzlePlatformsGameInstance::Host()
 {
-	UEngine* Engine = GetEngine();
-	if (Engine)
+	if (SessionInterface.IsValid())
 	{
-		Engine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Host"));
-		UWorld* World = GetWorld();
-		if (World)
+		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
+		if (ExistingSession == nullptr)
 		{
-			World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+			CreateSession();
+		}
+		else
+		{
+			SessionInterface->DestroySession(SESSION_NAME);
 		}
 	}
+}
+
+void UPuzzlePlatformsGameInstance::CreateSession()
+{
+	FOnlineSessionSettings SessionSettings;
+	SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 }
 
 void UPuzzlePlatformsGameInstance::Join(const FString& Address)
@@ -109,9 +122,36 @@ void UPuzzlePlatformsGameInstance::QuitGame()
 
 void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
+	if (!bWasSuccessful)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Creating game session failed"));
+		return;
+	}
+	else 
+	{
+		UEngine* Engine = GetEngine();
+		if (Engine)
+		{
+			Engine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Host"));
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+			}
+		}
+	}
+}
+
+void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)
+{
 	if (bWasSuccessful)
 	{
-		Host();
+		CreateSession();
 	}
+}
+
+void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Finding sessions complete"));
 }
 
