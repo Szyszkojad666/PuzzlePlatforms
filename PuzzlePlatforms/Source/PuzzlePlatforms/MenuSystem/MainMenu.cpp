@@ -72,3 +72,8 @@ void UMainMenu::Cancel()
 {
 	SwitchMenu();
 }
+
+void UMainMenu::AddWidgetToServerList(UUserWidget * InWidgetToAdd)
+{
+	ServerList->AddChild(InWidgetToAdd);
+}

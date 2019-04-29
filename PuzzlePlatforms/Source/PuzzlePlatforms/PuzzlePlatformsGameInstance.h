@@ -53,9 +53,15 @@ private:
 	TSubclassOf<UUserWidget> MainMenuWidgetBlueprintClass;
 	
 	TSubclassOf<UUserWidget> InGameMenuWidgetBlueprintClass;
+
+	TSubclassOf<UUserWidget> GameSessionInfoWidgetBlueprintClass;
 	
 	IOnlineSessionPtr SessionInterface;
 
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+	UInGameMenu* InGameMenu = nullptr;
+
+	UMainMenu* MainMenu = nullptr;
 	
 };

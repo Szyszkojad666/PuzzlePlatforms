@@ -41,6 +41,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UEditableText* IPAddressField;
 
+	UPROPERTY(meta = (BindWidget))
+	class UPanelWidget* ServerList;
+
 protected:
 	
 	UFUNCTION()
@@ -57,4 +60,7 @@ protected:
 	virtual void Quit() override;
 
 	virtual void Cancel() override;
+
+public:
+	void AddWidgetToServerList(UUserWidget* InWidgetToAdd);
 };
