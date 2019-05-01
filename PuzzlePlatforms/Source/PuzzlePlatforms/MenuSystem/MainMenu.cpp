@@ -3,7 +3,17 @@
 #include "MainMenu.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "MenuSystem/SessionInfo.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Components/EditableText.h"
+
+UMainMenu::UMainMenu(const FObjectInitializer & ObjectInitializer)
+{
+	static ConstructorHelpers::FClassFinder<UUserWidget> SessionInfoWidgetBPClass(TEXT("/Game/ThirdPersonCPP/Blueprints/UI/WBP_SessionInfo"));
+	if (!ensure(SessionInfoWidgetBPClass.Class != NULL)) return;
+	GameSessionInfoWidgetBlueprintClass = SessionInfoWidgetBPClass.Class;
+	UE_LOG(LogTemp, Warning, TEXT("Found class %s"), *SessionInfoWidgetBPClass.Class->GetName());
+}
 
 bool UMainMenu::Initialize()
 {
@@ -43,6 +53,7 @@ void UMainMenu::SwitchMenu()
 	}
 	else
 	{
+		MenuInterface->SearchSessions();
 		MenuSwitcher->SetActiveWidget(JoinMenu);
 	}
 }
@@ -73,7 +84,16 @@ void UMainMenu::Cancel()
 	SwitchMenu();
 }
 
-void UMainMenu::AddWidgetToServerList(UUserWidget * InWidgetToAdd)
+void UMainMenu::AddSessonInfoWidgetToServerList(FText Address)
 {
-	ServerList->AddChild(InWidgetToAdd);
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		USessionInfo* SessionInfo = CreateWidget<USessionInfo>(World, GameSessionInfoWidgetBlueprintClass);
+		if (SessionInfo)
+		{
+			ServerList->AddChild(SessionInfo);
+			SessionInfo->SetServerID(Address);
+		}
+	}
 }

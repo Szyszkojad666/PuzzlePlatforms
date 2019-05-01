@@ -29,4 +29,6 @@ public:
 	virtual void Quit() = 0;
 
 	virtual void QuitGame() = 0;
+
+	virtual	void SearchSessions() = 0;
 };

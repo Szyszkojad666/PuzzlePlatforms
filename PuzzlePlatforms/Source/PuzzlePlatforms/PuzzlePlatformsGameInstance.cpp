@@ -8,7 +8,6 @@
 #include "MenuSystem/MainMenu.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "InGameMenu.h"
-#include "MenuSystem/SessionInfo.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSessionInterface.h"
 
@@ -26,11 +25,6 @@ UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 	if (!ensure(InGameMenuWidgetBPClass.Class != NULL)) return;
 	InGameMenuWidgetBlueprintClass = InGameMenuWidgetBPClass.Class;
 	UE_LOG(LogTemp, Warning, TEXT("Found class %s"), *InGameMenuWidgetBPClass.Class->GetName());
-
-	static ConstructorHelpers::FClassFinder<UUserWidget> SessionInfoWidgetBPClass(TEXT("/Game/ThirdPersonCPP/Blueprints/UI/WBP_SessionInfo"));
-	if (!ensure(SessionInfoWidgetBPClass.Class != NULL)) return;
-	GameSessionInfoWidgetBlueprintClass = SessionInfoWidgetBPClass.Class;
-	UE_LOG(LogTemp, Warning, TEXT("Found class %s"), *SessionInfoWidgetBPClass.Class->GetName());
 }
 
 void UPuzzlePlatformsGameInstance::Init()
@@ -45,12 +39,6 @@ void UPuzzlePlatformsGameInstance::Init()
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
 			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnDestroySessionComplete);
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnFindSessionsComplete);
-			SessionSearch = MakeShareable(new FOnlineSessionSearch());
-			if (SessionSearch.IsValid())
-			{
-				SessionSearch->bIsLanQuery = true;
-				SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
-			}
 		}
 	}
 }
@@ -169,15 +157,22 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 			{
 				if (Result.IsSessionInfoValid())
 				{
-					USessionInfo* SessionInfo= CreateWidget<USessionInfo>(this, GameSessionInfoWidgetBlueprintClass);
-					if (SessionInfo->IsValidLowLevel())
 					{
-						SessionInfo->SetServerID(FText::FromString(Result.GetSessionIdStr()));
-						MainMenu->AddWidgetToServerList(SessionInfo);
+						MainMenu->AddSessonInfoWidgetToServerList(FText::FromString(Result.GetSessionIdStr()));
 					}
 				}
 			}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Finding sessions complete"));
+}
+
+void UPuzzlePlatformsGameInstance::SearchSessions()
+{
+	SessionSearch = MakeShareable(new FOnlineSessionSearch());
+	if (SessionSearch.IsValid())
+	{
+		SessionSearch->bIsLanQuery = true;
+		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+	}
 }
 

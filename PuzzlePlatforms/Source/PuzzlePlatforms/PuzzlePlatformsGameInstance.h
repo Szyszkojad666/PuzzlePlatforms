@@ -42,6 +42,9 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	UFUNCTION()
 	void QuitGame() override;
 
+	UFUNCTION()
+	void SearchSessions() override;
+
 	virtual void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
 
 	virtual void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
@@ -51,10 +54,8 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 private:
 	
 	TSubclassOf<UUserWidget> MainMenuWidgetBlueprintClass;
-	
-	TSubclassOf<UUserWidget> InGameMenuWidgetBlueprintClass;
 
-	TSubclassOf<UUserWidget> GameSessionInfoWidgetBlueprintClass;
+	TSubclassOf<UUserWidget> InGameMenuWidgetBlueprintClass;
 	
 	IOnlineSessionPtr SessionInterface;
 
@@ -63,5 +64,4 @@ private:
 	UInGameMenu* InGameMenu = nullptr;
 
 	UMainMenu* MainMenu = nullptr;
-	
 };

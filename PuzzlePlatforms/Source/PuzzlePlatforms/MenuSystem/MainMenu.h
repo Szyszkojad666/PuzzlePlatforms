@@ -15,8 +15,9 @@ class PUZZLEPLATFORMS_API UMainMenu : public UInGameMenu
 {
 	GENERATED_BODY()
 
-protected:
-virtual bool Initialize() override;
+public:
+	void AddSessonInfoWidgetToServerList(FText Address);
+	UMainMenu(const FObjectInitializer & ObjectInitializer);
 
 private:
 	// This meta binds the blueprint property to c++, as long as it is named the same in Blueprint
@@ -44,6 +45,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UPanelWidget* ServerList;
 
+	TSubclassOf<UUserWidget> GameSessionInfoWidgetBlueprintClass;
+
 protected:
 	
 	UFUNCTION()
@@ -61,6 +64,5 @@ protected:
 
 	virtual void Cancel() override;
 
-public:
-	void AddWidgetToServerList(UUserWidget* InWidgetToAdd);
+	virtual bool Initialize() override;
 };
