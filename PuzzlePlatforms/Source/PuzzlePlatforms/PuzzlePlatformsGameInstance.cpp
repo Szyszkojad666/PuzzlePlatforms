@@ -78,14 +78,15 @@ void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Joining %s"), *Address)); // printf is needed to convert TEXT into FString and print it together with Address
 }
 
-void UPuzzlePlatformsGameInstance::LoadMenuWidget()
+UMainMenu* UPuzzlePlatformsGameInstance::LoadMenuWidget()
 {
-	if (!ensure(MainMenuWidgetBlueprintClass!= NULL)) return;
+	if (!ensure(MainMenuWidgetBlueprintClass!= NULL)) return nullptr;
 	MainMenu = CreateWidget<UMainMenu>(this, MainMenuWidgetBlueprintClass);
-	if (!ensure(MainMenu != NULL)) return;
+	if (!ensure(MainMenu != NULL)) return nullptr;
 	{
 		MainMenu->Setup();
 		MainMenu->SetMenuInterface(this);
+		return MainMenu;
 	}
 }
 
@@ -158,7 +159,7 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 				if (Result.IsSessionInfoValid())
 				{
 					{
-						MainMenu->AddSessonInfoWidgetToServerList(FText::FromString(Result.GetSessionIdStr()));
+						MainMenu->AddServerWidgetToServerList(FText::FromString(Result.GetSessionIdStr()));
 					}
 				}
 			}

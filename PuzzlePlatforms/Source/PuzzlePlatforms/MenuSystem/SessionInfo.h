@@ -9,6 +9,8 @@
 /**
  * 
  */
+class UMainMenu;
+
 UCLASS()
 class PUZZLEPLATFORMS_API USessionInfo : public UUserWidget
 {
@@ -19,5 +21,17 @@ class PUZZLEPLATFORMS_API USessionInfo : public UUserWidget
 	
 public:
 	void SetServerID(FText InID);
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* ServerButton;
+
+	void Setup(UMainMenu* MenuOwner);
+
+private:
+	UMainMenu* MainMenu = nullptr;
 	
+	virtual bool Initialize() override;
+	
+	UFUNCTION()
+	void Select();
 };

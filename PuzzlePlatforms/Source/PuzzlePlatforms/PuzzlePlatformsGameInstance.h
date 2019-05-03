@@ -31,7 +31,7 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	void Join(const FString& Address) override;
 
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
-	void LoadMenuWidget();
+	UMainMenu* LoadMenuWidget();
 
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
 	void LoadInGameMenu();
@@ -51,6 +51,8 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 
 	virtual void OnFindSessionsComplete(bool bWasSuccessful);
 
+	
+
 private:
 	
 	TSubclassOf<UUserWidget> MainMenuWidgetBlueprintClass;
@@ -64,4 +66,6 @@ private:
 	UInGameMenu* InGameMenu = nullptr;
 
 	UMainMenu* MainMenu = nullptr;
+
+	
 };

@@ -35,6 +35,12 @@ void UMainMenu::Host()
 	}
 }
 
+void UMainMenu::SelectIndex(USessionInfo* InWidgetToSelect)
+{
+	int32 Index = ServerList->GetChildIndex(InWidgetToSelect);
+	SelectedIndex = Index;
+	UE_LOG(LogTemp, Warning, TEXT("Selected index is %d"), Index);
+}
 void UMainMenu::Join()
 {
 	if (MenuInterface != nullptr)
@@ -53,6 +59,7 @@ void UMainMenu::SwitchMenu()
 	}
 	else
 	{
+		ServerList->ClearChildren();
 		MenuInterface->SearchSessions();
 		MenuSwitcher->SetActiveWidget(JoinMenu);
 	}
@@ -84,15 +91,17 @@ void UMainMenu::Cancel()
 	SwitchMenu();
 }
 
-void UMainMenu::AddSessonInfoWidgetToServerList(FText Address)
+void UMainMenu::AddServerWidgetToServerList(FText Address)
 {
 	UWorld* World = GetWorld();
 	if (World)
 	{
 		USessionInfo* SessionInfo = CreateWidget<USessionInfo>(World, GameSessionInfoWidgetBlueprintClass);
-		if (SessionInfo)
+		if (!ensure(SessionInfo != NULL)) return;
 		{
 			ServerList->AddChild(SessionInfo);
+			ServerList->GetChildIndex(SessionInfo);
+			SessionInfo->Setup(this);
 			SessionInfo->SetServerID(Address);
 		}
 	}

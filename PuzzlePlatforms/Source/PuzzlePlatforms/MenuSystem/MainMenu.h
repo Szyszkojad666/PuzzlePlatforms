@@ -10,14 +10,18 @@
 /**
  * 
  */
+class USessionInfo;
 UCLASS()
 class PUZZLEPLATFORMS_API UMainMenu : public UInGameMenu
 {
 	GENERATED_BODY()
 
 public:
-	void AddSessonInfoWidgetToServerList(FText Address);
+	
+	void AddServerWidgetToServerList(FText Address);
 	UMainMenu(const FObjectInitializer & ObjectInitializer);
+
+	void SelectIndex(USessionInfo* InWidgetToSelect);
 
 private:
 	// This meta binds the blueprint property to c++, as long as it is named the same in Blueprint
@@ -45,7 +49,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UPanelWidget* ServerList;
 
-	TSubclassOf<UUserWidget> GameSessionInfoWidgetBlueprintClass;
+	TSubclassOf<class UUserWidget> GameSessionInfoWidgetBlueprintClass;
+
+	TOptional<int32> SelectedIndex;
 
 protected:
 	
@@ -65,4 +71,6 @@ protected:
 	virtual void Cancel() override;
 
 	virtual bool Initialize() override;
+
+	
 };
