@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "OnlineSubsystem.h"
 #include "MenuSystem/MainMenu.h"
+#include "OnlineSessionInterface.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
 
 class UUserWidget;
@@ -28,7 +29,7 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	void CreateSession();
 
 	UFUNCTION(exec)
-	void Join(const FString& Address) override;
+	void Join(int32 SessionIndex) override;
 
 	UFUNCTION(BlueprintCallable) //exec allows this function to show in console
 	UMainMenu* LoadMenuWidget();
@@ -51,6 +52,8 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 
 	virtual void OnFindSessionsComplete(bool bWasSuccessful);
 
+	virtual void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
 	
 
 private:
@@ -66,6 +69,5 @@ private:
 	UInGameMenu* InGameMenu = nullptr;
 
 	UMainMenu* MainMenu = nullptr;
-
 	
 };

@@ -23,6 +23,8 @@ public:
 
 	void SelectIndex(USessionInfo* InWidgetToSelect);
 
+	virtual void Deactivate() override;
+
 private:
 	// This meta binds the blueprint property to c++, as long as it is named the same in Blueprint
 	UPROPERTY(meta = (BindWidget))
@@ -63,8 +65,6 @@ protected:
 
 	UFUNCTION()
 	void SwitchMenu();
-
-	virtual void Deactivate() override;
 
 	virtual void Quit() override;
 

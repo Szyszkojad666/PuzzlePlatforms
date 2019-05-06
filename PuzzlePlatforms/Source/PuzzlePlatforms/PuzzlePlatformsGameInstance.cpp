@@ -9,7 +9,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "InGameMenu.h"
 #include "OnlineSessionSettings.h"
-#include "OnlineSessionInterface.h"
+
 
 const static FName SESSION_NAME = TEXT("MyGameSession");
 
@@ -39,6 +39,7 @@ void UPuzzlePlatformsGameInstance::Init()
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
 			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnDestroySessionComplete);
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnFindSessionsComplete);
+			SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnJoinSessionComplete);
 		}
 	}
 }
@@ -62,20 +63,20 @@ void UPuzzlePlatformsGameInstance::Host()
 void UPuzzlePlatformsGameInstance::CreateSession()
 {
 	FOnlineSessionSettings SessionSettings;
-	SessionSettings.bIsLANMatch = true;
+	SessionSettings.bIsLANMatch = false;
 	SessionSettings.NumPublicConnections = 2;
 	SessionSettings.bShouldAdvertise = true;
+	SessionSettings.bUsesPresence = true;
 	SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 }
 
-void UPuzzlePlatformsGameInstance::Join(const FString& Address)
+void UPuzzlePlatformsGameInstance::Join(int32 SessionIndex)
 {
-	APlayerController* PC = GetFirstLocalPlayerController();
-	if (PC)
+	if (SessionInterface.IsValid() && SessionSearch.IsValid())
 	{
-		PC->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+		MainMenu->Deactivate();
+		SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[SessionIndex]);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Joining %s"), *Address)); // printf is needed to convert TEXT into FString and print it together with Address
 }
 
 UMainMenu* UPuzzlePlatformsGameInstance::LoadMenuWidget()
@@ -167,12 +168,28 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 	UE_LOG(LogTemp, Warning, TEXT("Finding sessions complete"));
 }
 
+void UPuzzlePlatformsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	APlayerController* PC = GetFirstLocalPlayerController();
+	if (PC && Result == EOnJoinSessionCompleteResult::Success)
+	{
+		FString Address;
+		if (!SessionInterface->GetResolvedConnectString(SESSION_NAME, Address))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Could not get connect string"));
+			return;
+		}
+		PC->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+	}
+}
+
 void UPuzzlePlatformsGameInstance::SearchSessions()
 {
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	if (SessionSearch.IsValid())
 	{
-		SessionSearch->bIsLanQuery = true;
+		SessionSearch->MaxSearchResults = 100; // because we are using a shared app id we need more results to find our game
+		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
 }

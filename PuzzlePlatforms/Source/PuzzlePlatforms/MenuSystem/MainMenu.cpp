@@ -45,9 +45,8 @@ void UMainMenu::Join()
 {
 	if (MenuInterface != nullptr)
 	{
-		FString IPAddress = IPAddressField->GetText().ToString();
-		MenuInterface->Join(IPAddress);
-		Deactivate();
+		if(SelectedIndex.IsSet())
+		MenuInterface->Join(SelectedIndex.GetValue());
 	}
 }
 
