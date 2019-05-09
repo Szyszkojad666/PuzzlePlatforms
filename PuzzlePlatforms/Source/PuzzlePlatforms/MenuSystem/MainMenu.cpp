@@ -39,7 +39,19 @@ void UMainMenu::SelectIndex(USessionInfo* InWidgetToSelect)
 {
 	int32 Index = ServerList->GetChildIndex(InWidgetToSelect);
 	SelectedIndex = Index;
+	UpdateSelection();
 	UE_LOG(LogTemp, Warning, TEXT("Selected index is %d"), Index);
+}
+void UMainMenu::UpdateSelection()
+{
+	for (int32 i = 0; i < ServerList->GetChildrenCount(); i++)
+	{
+		USessionInfo* ServerRow = Cast<USessionInfo>(ServerList->GetChildAt(i));
+		if (ServerRow)
+		{
+			ServerRow->bSelected = (SelectedIndex.IsSet() && SelectedIndex.GetValue() == i);
+		}
+	}
 }
 void UMainMenu::Join()
 {
@@ -90,7 +102,7 @@ void UMainMenu::Cancel()
 	SwitchMenu();
 }
 
-void UMainMenu::AddServerWidgetToServerList(FText Address)
+void UMainMenu::AddServerWidgetToServerList(FServerData ServerData)
 {
 	UWorld* World = GetWorld();
 	if (World)
@@ -101,7 +113,7 @@ void UMainMenu::AddServerWidgetToServerList(FText Address)
 			ServerList->AddChild(SessionInfo);
 			ServerList->GetChildIndex(SessionInfo);
 			SessionInfo->Setup(this);
-			SessionInfo->SetServerID(Address);
+			SessionInfo->SetServerData(ServerData);
 		}
 	}
 }

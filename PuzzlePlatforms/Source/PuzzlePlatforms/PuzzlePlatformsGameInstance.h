@@ -69,5 +69,7 @@ private:
 	UInGameMenu* InGameMenu = nullptr;
 
 	UMainMenu* MainMenu = nullptr;
+
+	IOnlineSubsystem* OnlineSubsystem;
 	
 };

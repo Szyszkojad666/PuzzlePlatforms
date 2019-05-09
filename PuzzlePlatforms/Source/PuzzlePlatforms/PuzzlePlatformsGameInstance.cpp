@@ -29,7 +29,7 @@ UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 
 void UPuzzlePlatformsGameInstance::Init()
 {
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OSS = %s"), *OnlineSubsystem->GetSubsystemName().ToString());
@@ -63,7 +63,7 @@ void UPuzzlePlatformsGameInstance::Host()
 void UPuzzlePlatformsGameInstance::CreateSession()
 {
 	FOnlineSessionSettings SessionSettings;
-	SessionSettings.bIsLANMatch = false;
+	SessionSettings.bIsLANMatch = (OnlineSubsystem != nullptr && OnlineSubsystem->GetSubsystemName() == "NULL");
 	SessionSettings.NumPublicConnections = 2;
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bUsesPresence = true;
@@ -160,7 +160,12 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 				if (Result.IsSessionInfoValid())
 				{
 					{
-						MainMenu->AddServerWidgetToServerList(FText::FromString(Result.GetSessionIdStr()));
+						FServerData ServerData;
+						ServerData.Name = Result.GetSessionIdStr();
+						ServerData.HostUserName = Result.Session.OwningUserName;
+						ServerData.CurrentPlayers = Result.Session.NumOpenPublicConnections;
+						ServerData.MaxPlayers = Result.Session.SessionSettings.NumPublicConnections;
+						MainMenu->AddServerWidgetToServerList(ServerData);
 					}
 				}
 			}

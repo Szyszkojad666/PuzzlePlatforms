@@ -7,10 +7,19 @@
 #include "MenuInterface.h"
 #include "MainMenu.generated.h"
 
-/**
- * 
- */
 class USessionInfo;
+
+USTRUCT()
+struct FServerData
+{
+	GENERATED_BODY()
+
+	FString Name;
+	uint16 CurrentPlayers;
+	uint16 MaxPlayers;
+	FString HostUserName;
+};
+
 UCLASS()
 class PUZZLEPLATFORMS_API UMainMenu : public UInGameMenu
 {
@@ -18,10 +27,12 @@ class PUZZLEPLATFORMS_API UMainMenu : public UInGameMenu
 
 public:
 	
-	void AddServerWidgetToServerList(FText Address);
+	void AddServerWidgetToServerList(FServerData ServerData);
 	UMainMenu(const FObjectInitializer & ObjectInitializer);
 
 	void SelectIndex(USessionInfo* InWidgetToSelect);
+
+	void UpdateSelection();
 
 	virtual void Deactivate() override;
 

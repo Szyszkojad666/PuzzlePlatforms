@@ -10,6 +10,7 @@
  * 
  */
 class UMainMenu;
+struct FServerData;
 
 UCLASS()
 class PUZZLEPLATFORMS_API USessionInfo : public UUserWidget
@@ -18,12 +19,24 @@ class PUZZLEPLATFORMS_API USessionInfo : public UUserWidget
 	
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ServerID;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* HostName;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* MaxPlayers;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CurrentPlayers;
 	
 public:
-	void SetServerID(FText InID);
+	void SetServerData(FServerData InServerData);
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* ServerButton;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bSelected;
 
 	void Setup(UMainMenu* MenuOwner);
 

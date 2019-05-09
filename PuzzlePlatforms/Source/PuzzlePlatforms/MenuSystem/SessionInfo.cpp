@@ -6,12 +6,14 @@
 #include "MainMenu.h"
 
 
-void USessionInfo::SetServerID(FText InID)
+
+void USessionInfo::SetServerData(FServerData InServerData)
 {
 	if (ServerID)
-		ServerID->SetText(InID);
-	else
-		return;
+		ServerID->SetText(FText::FromString(InServerData.Name));
+	HostName->SetText(FText::FromString(InServerData.HostUserName));
+	MaxPlayers->SetText(FText::AsNumber(InServerData.MaxPlayers));
+	CurrentPlayers->SetText(FText::AsNumber(InServerData.CurrentPlayers));
 }
 
 void USessionInfo::Setup(UMainMenu * MenuOwner)
