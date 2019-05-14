@@ -22,7 +22,9 @@ bool UMainMenu::Initialize()
 	if (!ensure(HostButton != nullptr)) return false;
 	HostButton->OnClicked.AddDynamic(this, &UMainMenu::Host);
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::Join);
-	MenuSwitcherButton->OnClicked.AddDynamic(this, &UMainMenu::SwitchMenu);
+	MenuSwitcherButton->OnClicked.AddDynamic(this, &UMainMenu::SwitchJoinMenu);
+	HostMenuButton->OnClicked.AddDynamic(this, &UMainMenu::SwitchHostMenu);
+	CancelHostButton->OnClicked.AddDynamic(this, &UMainMenu::SwitchHostMenu);
 	return true;
 }
 
@@ -30,7 +32,7 @@ void UMainMenu::Host()
 {
 	if (MenuInterface != nullptr)
 	{
-		MenuInterface->Host();
+		MenuInterface->Host(HostNameField->GetText());
 		Deactivate();
 	}
 }
@@ -62,7 +64,7 @@ void UMainMenu::Join()
 	}
 }
 
-void UMainMenu::SwitchMenu()
+void UMainMenu::SwitchJoinMenu()
 {
 	if (MenuSwitcher->GetActiveWidget() == JoinMenu)
 	{
@@ -73,6 +75,18 @@ void UMainMenu::SwitchMenu()
 		ServerList->ClearChildren();
 		MenuInterface->SearchSessions();
 		MenuSwitcher->SetActiveWidget(JoinMenu);
+	}
+}
+
+void UMainMenu::SwitchHostMenu()
+{
+	if (MenuSwitcher->GetActiveWidget() == HostMenu)
+	{
+		MenuSwitcher->SetActiveWidget(MainMenu);
+	}
+	else
+	{
+		MenuSwitcher->SetActiveWidget(HostMenu);
 	}
 }
 
@@ -99,7 +113,7 @@ void UMainMenu::Quit()
 
 void UMainMenu::Cancel()
 {
-	SwitchMenu();
+	SwitchJoinMenu();
 }
 
 void UMainMenu::AddServerWidgetToServerList(FServerData ServerData)

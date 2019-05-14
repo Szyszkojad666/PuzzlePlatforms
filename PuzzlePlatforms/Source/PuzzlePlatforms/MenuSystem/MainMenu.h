@@ -42,10 +42,16 @@ private:
 	class UButton* HostButton;
 
 	UPROPERTY(meta = (BindWidget))
+	class UButton* CancelHostButton;
+
+	UPROPERTY(meta = (BindWidget))
 	class UButton* JoinButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* MenuSwitcherButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* HostMenuButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UWidgetSwitcher* MenuSwitcher;
@@ -54,10 +60,16 @@ private:
 	class UWidget* JoinMenu;
 
 	UPROPERTY(meta = (BindWidget))
+	class UWidget* HostMenu;
+
+	UPROPERTY(meta = (BindWidget))
 	class UWidget* MainMenu;
 
 	UPROPERTY(meta = (BindWidget))
 	class UEditableText* IPAddressField;
+
+	UPROPERTY(meta = (BindWidget))
+	class UEditableText* HostNameField;
 
 	UPROPERTY(meta = (BindWidget))
 	class UPanelWidget* ServerList;
@@ -75,7 +87,10 @@ protected:
 	void Join();
 
 	UFUNCTION()
-	void SwitchMenu();
+	void SwitchJoinMenu();
+
+	UFUNCTION()
+	void SwitchHostMenu();
 
 	virtual void Quit() override;
 

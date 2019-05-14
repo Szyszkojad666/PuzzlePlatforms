@@ -44,14 +44,14 @@ void UPuzzlePlatformsGameInstance::Init()
 	}
 }
 
-void UPuzzlePlatformsGameInstance::Host()
+void UPuzzlePlatformsGameInstance::Host(FText HostName)
 {
 	if (SessionInterface.IsValid())
 	{
 		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
 		if (ExistingSession == nullptr)
 		{
-			CreateSession();
+			CreateSession(HostName);
 		}
 		else
 		{
@@ -60,13 +60,14 @@ void UPuzzlePlatformsGameInstance::Host()
 	}
 }
 
-void UPuzzlePlatformsGameInstance::CreateSession()
+void UPuzzlePlatformsGameInstance::CreateSession(FText HostName)
 {
 	FOnlineSessionSettings SessionSettings;
 	SessionSettings.bIsLANMatch = (OnlineSubsystem != nullptr && OnlineSubsystem->GetSubsystemName() == "NULL");
 	SessionSettings.NumPublicConnections = 2;
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bUsesPresence = true;
+	SessionSettings.Set(TEXT("Test"), HostName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 }
 
@@ -146,7 +147,8 @@ void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionName, b
 {
 	if (bWasSuccessful)
 	{
-		CreateSession();
+		FText NewSessionName = FText::FromName(SessionName);
+		CreateSession(NewSessionName);
 	}
 }
 
@@ -165,6 +167,15 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 						ServerData.HostUserName = Result.Session.OwningUserName;
 						ServerData.MaxPlayers = Result.Session.SessionSettings.NumPublicConnections;
 						ServerData.CurrentPlayers = ServerData.MaxPlayers - Result.Session.NumOpenPublicConnections;
+						FString Data;
+						if (Result.Session.SessionSettings.Get(TEXT("Test"), Data))
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Data found in settings: %s"), *Data);
+						}
+						else
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Didn't get expected data"));
+						}
 						MainMenu->AddServerWidgetToServerList(ServerData);
 					}
 				}

@@ -24,9 +24,9 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 	virtual void Init();
 
 	UFUNCTION(exec) //exec allows this function to show in console
-	void Host() override;
+	void Host(FText HostName) override;
 
-	void CreateSession();
+	void CreateSession(FText HostName);
 
 	UFUNCTION(exec)
 	void Join(int32 SessionIndex) override;
