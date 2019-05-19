@@ -64,7 +64,7 @@ void UPuzzlePlatformsGameInstance::CreateSession(FText HostName)
 {
 	FOnlineSessionSettings SessionSettings;
 	SessionSettings.bIsLANMatch = (OnlineSubsystem != nullptr && OnlineSubsystem->GetSubsystemName() == "NULL");
-	SessionSettings.NumPublicConnections = 2;
+	SessionSettings.NumPublicConnections = 5;
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bUsesPresence = true;
 	SessionSettings.Set(TEXT("Test"), HostName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
@@ -137,7 +137,7 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 			UWorld* World = GetWorld();
 			if (World)
 			{
-				World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+				World->ServerTravel("/Game/Maps/L_Lobby?listen");
 			}
 		}
 	}
