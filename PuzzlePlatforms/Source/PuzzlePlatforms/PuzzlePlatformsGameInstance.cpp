@@ -9,9 +9,10 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "InGameMenu.h"
 #include "OnlineSessionSettings.h"
+#include "UnrealNames.h"
 
 
-const static FName SESSION_NAME = TEXT("MyGameSession");
+FName SESSION_NAME = NAME_GameSession;
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 {
@@ -67,7 +68,7 @@ void UPuzzlePlatformsGameInstance::CreateSession(FText HostName)
 	SessionSettings.NumPublicConnections = 5;
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bUsesPresence = true;
-	SessionSettings.Set(TEXT("Test"), HostName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	SessionSettings.Set(SESSION_NAME, HostName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 }
 
@@ -133,7 +134,8 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 		UEngine* Engine = GetEngine();
 		if (Engine)
 		{
-			Engine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Host"));
+			//Engine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Host"));
+			UE_LOG(LogTemp, Warning, TEXT("Chuj %s"),*SessionName.ToString());
 			UWorld* World = GetWorld();
 			if (World)
 			{
