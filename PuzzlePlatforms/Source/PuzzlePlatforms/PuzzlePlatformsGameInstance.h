@@ -54,7 +54,6 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 
 	virtual void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
-	
 
 private:
 	
@@ -71,5 +70,4 @@ private:
 	UMainMenu* MainMenu = nullptr;
 
 	IOnlineSubsystem* OnlineSubsystem;
-	
 };

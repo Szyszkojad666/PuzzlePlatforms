@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PuzzlePlatformsGameInstance.h"
-
 #include "Blueprint/UserWidget.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
@@ -10,6 +9,7 @@
 #include "InGameMenu.h"
 #include "OnlineSessionSettings.h"
 #include "UnrealNames.h"
+
 
 
 FName SESSION_NAME = NAME_GameSession;
@@ -138,9 +138,7 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 			UE_LOG(LogTemp, Warning, TEXT("Chuj %s"),*SessionName.ToString());
 			UWorld* World = GetWorld();
 			if (World)
-			{
-				World->ServerTravel("/Game/Maps/L_Lobby?listen");
-			}
+			World->ServerTravel("/Game/Maps/L_Lobby?listen");
 		}
 	}
 }
